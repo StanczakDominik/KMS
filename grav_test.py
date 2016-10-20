@@ -19,7 +19,7 @@ def test_grav_field():
     print("Dobre kierunki!")
     F_grav_per_particle_ax_0 = F_grav.sum(axis=0)
     print(F_grav_per_particle_ax_0)
-    print("Złe kierunki!")
+    print("Zle kierunki!")
 
     assert np.isclose(analytic_F, F_grav_per_particle_ax_1).all()
 

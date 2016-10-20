@@ -16,7 +16,7 @@ def read_parameters(parametersFile):
 	parametersArray = np.zeros(nLines)
 
 	lines = np.loadtxt(parametersFile, comments="#")
-	k = 8.31*1e-3
+	k = 8.31e-3
 
 	n = int(lines[0])
 	m = lines[1]
@@ -68,6 +68,7 @@ def calculate_momenta(energy):
 
 	cm_momentum = momenta.sum(axis=0)
 	momenta -= cm_momentum/N
+	import ipdb; ipdb.set_trace()
 	particles[:,3:] = momenta
 	return momenta
 
@@ -77,12 +78,13 @@ def calculate_potential(coordinates, R, e, N,):
 	# ToDo: popatrzec na czas z mnozeniem!
 
 	# robie macierz na odleglosci miedzy czastami
+
 	rij = coordinates.reshape((N,1,3)) - coordinates.reshape((1,N,3)) # 1(np broadcasting)  - liczba dla kazdej z par, 3 - x,y,z
 	rij_scalar = np.sqrt((rij**2).sum(axis=2))
 	indices = np.arange(int(N))
 	rij_scalar[indices,indices] = np.inf
 	potential_VDW = e*((R/rij_scalar)**12-2*(R/rij_scalar)**6) # gdybym miala nawias [], miałabym liste
-	total_VDW_potential = potential_VDW.sum() / 2.
+	total_VDW_potential = potential_VDW.sum() * 0.5
 	F_VDW = 12*potential_VDW.reshape((N,N,1))*(rij/rij_scalar.reshape((N,N,1))**2)
 	F_VDW = F_VDW.sum(axis = 1) # TODO: sprawdzic
 
@@ -97,7 +99,8 @@ def calculate_potential(coordinates, R, e, N,):
 	total_potential = total_VDW_potential+total_wall_potential
 	F = F_wall+F_VDW
 
-	p = 1./(4.*pi*L**2)*np.sqrt((F**2).sum(axis=1))
+	p = np.sqrt((F_wall**2).sum())/(4.*pi*L**2)
+	# import ipdb; ipdb.set_trace()
 	return F, p, total_potential
 
 def dynamics(F, momenta, coordinates):
@@ -120,18 +123,16 @@ def dynamics(F, momenta, coordinates):
 
 		# ZAŁOŻENIE: H oraz energia ma być skalarem, bo na tę chwilę jest wektorem
 		# i p w sumie też
-		energy_current = energy_current.sum()
-		p = p.sum()
 
+		energy_current_sum = energy_current.sum()
 		# chwilowe charakterystyki dla wszystkich czastek
-		T = 2./(3*k*int(N))* energy_current
+		T = 2./(3.0*k*int(N))* energy_current_sum
 
-
-		H = energy_current + total_potential
+		H = energy_current_sum + total_potential
 		#energy_particle =
 
-		print "temperatura ", T
-		print "energia", H
+		print ("temperatura ", T)
+		print ("energia", H)
 
 		if (s >=So):
 			T_av += T
@@ -175,6 +176,7 @@ if __name__ == "__main__":
 
 	energy = calculate_coordinates(particles, coordinates)
 	momenta = calculate_momenta(energy)
+	import ipdb; ipdb.set_trace()
 	np.savetxt(coordinatesFile, particles[:,[0,1,2]]) # all rows, only 3,4,5 columns
 	F, p, total_potential = calculate_potential(coordinates, R, e, N)
 	dynamics(F,momenta,coordinates)
