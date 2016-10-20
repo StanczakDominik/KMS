@@ -140,14 +140,12 @@ def dynamics(F, momenta, coordinates):
 			H_av += H
 			P_av += p
 
-		import ipdb; ipdb.set_trace()
-
-		if (s % Sout==0.0):
+		if (s % Sout==0):
 			t = s + tau
 			current_parameters = np.array([t,H,total_potential,T,p])
 			np.savetxt(f_handle, current_parameters.reshape((1,5)),delimiter='\t', fmt='%1.4e')
 
-		if (s % Sxyz==0.0):
+		if (s % Sxyz==0):
 			np.savetxt(avs_file,  np.hstack((coordinates, energy_current[:, np.newaxis])))
 			avs_file.write('\n')
 			avs_file.write('\n')
