@@ -63,7 +63,7 @@ def calculate_coordinates(particles, coordinates):
 
 	return energy
 
-def calculate_momenta(particles, energy):
+def calculate_momenta(energy):
 	momenta = np.random.choice((-1.0,1.0), size = (N, 3))*np.sqrt(2.*m*energy)
 
 	cm_momentum = momenta.sum(axis=0)
@@ -174,7 +174,7 @@ if __name__ == "__main__":
 	coordinates = np.zeros((int(N),3))
 
 	energy = calculate_coordinates(particles, coordinates)
-	momenta = calculate_momenta(particles, energy)
+	momenta = calculate_momenta(energy)
 	np.savetxt(coordinatesFile, particles[:,[0,1,2]]) # all rows, only 3,4,5 columns
 	F, p, total_potential = calculate_potential(coordinates, R, e, N)
 	dynamics(F,momenta,coordinates)
