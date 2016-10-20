@@ -69,16 +69,7 @@ def calculate_momenta(particles, momenta,energy):
 	return momenta
 
 
-def calculate_potential():
-	distances = np.zeros((N,N))
-	total_potential = 0
-	p = 0.0
-	Fx = np.zeros((N,N))
-	Fy = np.zeros((N,N))
-	Fz = np.zeros((N,N))
-	Fs = np.zeros(N)
-	F = np.zeros((N,3))
-
+def calculate_potential(coordinates, R, e, N,):
 	# OPTYMALIZACJA
 	# ToDo: popatrzec na czas z mnozeniem!
 
@@ -87,10 +78,10 @@ def calculate_potential():
 	rij_scalar = np.sqrt((rij**2).sum(axis=2))
 	indices = np.arange(int(N))
 	rij_scalar[indices,indices] = np.inf
-	potential_VDW = e*((R/rij_scalar)**12-2*(R/rij_scalar)**6) # gdybym miala nawias [],mialaby liste
+	potential_VDW = e*((R/rij_scalar)**12-2*(R/rij_scalar)**6) # gdybym miala nawias [], miałabym liste
 	total_VDW_potential = potential_VDW.sum() / 2.
 	F_VDW = 12*potential_VDW.reshape((N,N,1))*(rij/rij_scalar.reshape((N,N,1))**2)
-	F_VDW = F_VDW.sum(axis = 1) # sprawdzic
+	F_VDW = F_VDW.sum(axis = 1) # TODO: sprawdzic
 
 	wall_potential = np.zeros(N, dtype=float)
 	ri = np.sqrt((coordinates**2).sum(axis=1))
