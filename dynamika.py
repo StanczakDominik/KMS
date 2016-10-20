@@ -118,8 +118,15 @@ def dynamics(F, momenta, coordinates):
 
 		energy_current = (momenta**2).sum(axis = 1)/(2.0*m)
 
+		# ZAŁOŻENIE: H oraz energia ma być skalarem, bo na tę chwilę jest wektorem
+		# i p w sumie też
+		energy_current = energy_current.sum()
+		p = p.sum()
+
 		# chwilowe charakterystyki dla wszystkich czastek
 		T = 2./(3*k*int(N))* energy_current
+
+
 		H = energy_current + total_potential
 		#energy_particle =
 
@@ -165,12 +172,6 @@ if __name__ == "__main__":
 
 	particles = np.zeros((int(N),6))
 	coordinates = np.zeros((int(N),3))
-	momenta = np.zeros((int(N),3))
-	energy = np.zeros((int(N),3))
-	F = np.zeros((N,3))
-	p = 0.0
-	total_potential = 0.0
-
 
 	energy = calculate_coordinates(particles, coordinates)
 	momenta = calculate_momenta(particles, energy)
