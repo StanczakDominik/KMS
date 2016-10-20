@@ -139,7 +139,7 @@ def dynamics(F, momenta, coordinates):
 			H_av += H
 			P_av += p
 
-
+		import ipdb; ipdb.set_trace()
 
 		if (fmod(s, Sout)==0.0):
 			t = s + tau
@@ -150,7 +150,7 @@ def dynamics(F, momenta, coordinates):
 
 		if (fmod(s, Sxyz)==0.0):
 			f = file('avs.dat', 'a')
-			np.savetxt(f,  coordinates)
+			np.savetxt(f,  np.hstack((coordinates, energy_current[:, np.newaxis]))
 			f.write('\n')
 			f.write('\n')
 			f.close()
