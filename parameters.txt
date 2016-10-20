@@ -1,5 +1,5 @@
 5	# n 
-16605402e-27	# m *1e-27
+40	# m *1e-27
 1	# e - epsilon
 0.38	# R 
 10000	# f	- parametr sprezystosci
