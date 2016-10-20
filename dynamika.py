@@ -54,13 +54,9 @@ def calculate_coordinates(particles, coordinates):
 
 	energy = -1./2*k*T0*np.log(np.random.uniform(0.0,1.0, size = (N, 3)))
 
-	particles[:,0] = coordinates[:,0]
-	particles[:,1] = coordinates[:,1]
-	particles[:,2] = coordinates[:,2]
+	particles[:,:3] = coordinates
 	E_av_x = np.mean(energy,axis=0)
-	energy[:,0] /=  E_av_x[0]
-	energy[:,1] /=  E_av_x[1]
-	energy[:,2] /=  E_av_x[2]
+	energy /=  E_av_x
 
 	return energy
 
