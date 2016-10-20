@@ -68,7 +68,6 @@ def calculate_momenta(energy):
 
 	cm_momentum = momenta.sum(axis=0)
 	momenta -= cm_momentum/N
-	import ipdb; ipdb.set_trace()
 	particles[:,3:] = momenta
 	return momenta
 
@@ -100,7 +99,6 @@ def calculate_potential(coordinates, R, e, N,):
 	F = F_wall+F_VDW
 
 	p = np.sqrt((F_wall**2).sum())/(4.*pi*L**2)
-	# import ipdb; ipdb.set_trace()
 	return F, p, total_potential
 
 def dynamics(F, momenta, coordinates):
@@ -108,6 +106,9 @@ def dynamics(F, momenta, coordinates):
 	P_av = 0.0
 	H_av = 0.0
 	# So - kroki przeznaczone na wstepna termalizacje
+
+	avs_file = file('avs.dat', 'a')
+	f_handle = file(outFile, 'a')
 
 	energy_particle = np.zeros(N)
 
@@ -141,19 +142,17 @@ def dynamics(F, momenta, coordinates):
 
 		import ipdb; ipdb.set_trace()
 
-		if (fmod(s, Sout)==0.0):
+		if (s % Sout==0.0):
 			t = s + tau
-			f_handle = file(outFile, 'a')
 			current_parameters = np.array([t,H,total_potential,T,p])
 			np.savetxt(f_handle, current_parameters.reshape((1,5)),delimiter='\t', fmt='%1.4e')
-			f_handle.close()
 
-		if (fmod(s, Sxyz)==0.0):
-			f = file('avs.dat', 'a')
-			np.savetxt(f,  np.hstack((coordinates, energy_current[:, np.newaxis]))
-			f.write('\n')
-			f.write('\n')
-			f.close()
+		if (s % Sxyz==0.0):
+			np.savetxt(avs_file,  np.hstack((coordinates, energy_current[:, np.newaxis])))
+			avs_file.write('\n')
+			avs_file.write('\n')
+	f_handle.close()
+	avs_file.close()
 
 def plot_3D(data):
 	fig = plt.figure()
@@ -176,7 +175,6 @@ if __name__ == "__main__":
 
 	energy = calculate_coordinates(particles, coordinates)
 	momenta = calculate_momenta(energy)
-	import ipdb; ipdb.set_trace()
 	np.savetxt(coordinatesFile, particles[:,[0,1,2]]) # all rows, only 3,4,5 columns
 	F, p, total_potential = calculate_potential(coordinates, R, e, N)
 	dynamics(F,momenta,coordinates)
