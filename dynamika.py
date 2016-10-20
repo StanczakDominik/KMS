@@ -54,13 +54,16 @@ def calculate_coordinates(particles, coordinates):
 
 	energy = -1./2*k*T0*np.log(np.random.uniform(0.0,1.0, size = (N, 3)))
 
+	# to jest dobrze i nie musi być zwracane na zewnątrz, ponieważ podajesz to przez arg
+	# tak jak pass by reference w Cpp
+	# (tak naprawdę podanie w argumencie macierzy to podanie wskaźnika, bo C we flakach!)
 	particles[:,:3] = coordinates
 	E_av_x = np.mean(energy,axis=0)
 	energy /=  E_av_x
 
 	return energy
 
-def calculate_momenta(particles, momenta,energy):
+def calculate_momenta(particles, energy):
 	momenta = np.random.choice((-1.0,1.0), size = (N, 3))*np.sqrt(2.*m*energy)
 
 	cm_momentum = momenta.sum(axis=0)
@@ -170,7 +173,7 @@ if __name__ == "__main__":
 
 
 	energy = calculate_coordinates(particles, coordinates)
-	momenta = calculate_momenta(particles, momenta, energy)
+	momenta = calculate_momenta(particles, energy)
 	np.savetxt(coordinatesFile, particles[:,[0,1,2]]) # all rows, only 3,4,5 columns
 	F, p, total_potential = calculate_potential(coordinates, R, e, N)
 	dynamics(F,momenta,coordinates)
