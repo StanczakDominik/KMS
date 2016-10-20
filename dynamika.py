@@ -109,7 +109,7 @@ def dynamics(F, momenta, coordinates):
 		momenta += 0.5*F*tau
 		coordinates += momenta*tau/float(m)
 			# obliczenie nowego potencjalu, sil oraz chwilowego cisnienia
-		F, p, total_potential = calculate_potential()
+		F, p, total_potential = calculate_potential(coordinates, R, e, N)
 
 		momenta += 0.5*F*tau
 
@@ -172,5 +172,5 @@ if __name__ == "__main__":
 	energy = calculate_coordinates(particles, coordinates)
 	momenta = calculate_momenta(particles, momenta, energy)
 	np.savetxt(coordinatesFile, particles[:,[0,1,2]]) # all rows, only 3,4,5 columns
-	F, p, total_potential = calculate_potential()
+	F, p, total_potential = calculate_potential(coordinates, R, e, N)
 	dynamics(F,momenta,coordinates)
